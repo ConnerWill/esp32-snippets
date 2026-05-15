@@ -6,23 +6,22 @@
  *    SIGNAL_PIN -> sensor signal output
  *
  * LEDs:
- *    EMPTY_LED_PIN -> red LED that turns on when level is 0
- *    LED_PINS[0]  -> level 1
- *    LED_PINS[1]  -> level 2
- *    LED_PINS[2]  -> level 3
- *    LED_PINS[3]  -> level 4
+ *    D2 -> full / highest level LED
+ *    D3 -> next level down
+ *    D4 -> next level down
+ *    D5 -> lowest non-empty level LED
+ *    D6 -> red empty LED
  *
  * Example wiring:
  *
  *    Arduino Pin   Purpose
  *    D7            Sensor power
  *    A5            Sensor signal
- *    D2            Level LED 1
- *    D3            Level LED 2
- *    D4            Level LED 3
- *    D5            Level LED 4
+ *    D2            Full / highest level LED
+ *    D3            High level LED
+ *    D4            Medium level LED
+ *    D5            Low level LED
  *    D6            Red empty LED
- *
  */
 
 #include <Arduino.h>
@@ -47,13 +46,20 @@ constexpr uint8_t LEVEL_MAX = 4;
 /*
  * LED pins used as a bar graph.
  *
- * Level 0 = red empty LED on, all level LEDs off
- * Level 1 = LED 1 on
- * Level 2 = LEDs 1-2 on
- * Level 3 = LEDs 1-3 on
- * Level 4 = LEDs 1-4 on
+ * Important:
+ *   This array is ordered from LOWEST non-empty level to HIGHEST level.
+ *
+ * Physical layout:
+ *   D2 = full / highest
+ *   D3 = high
+ *   D4 = medium
+ *   D5 = low
+ *
+ * Code order:
+ *   D5 turns on first at level 1.
+ *   D2 turns on last at level 4.
  */
-const uint8_t LED_PINS[] = {2, 3, 4, 5};
+const uint8_t LED_PINS[] = {5, 4, 3, 2};
 constexpr uint8_t LED_COUNT = sizeof(LED_PINS) / sizeof(LED_PINS[0]);
 
 /*
@@ -122,6 +128,13 @@ uint8_t valueToLevel(uint16_t rawValue) {
  * If level is 1-4:
  *   - red empty LED turns off
  *   - level LEDs act like a bar graph
+ *
+ * Level behavior:
+ *   Level 0 = D6
+ *   Level 1 = D5
+ *   Level 2 = D5, D4
+ *   Level 3 = D5, D4, D3
+ *   Level 4 = D5, D4, D3, D2
  */
 void updateWaterLevelLeds(uint8_t level) {
   digitalWrite(EMPTY_LED_PIN, level == 0 ? HIGH : LOW);
