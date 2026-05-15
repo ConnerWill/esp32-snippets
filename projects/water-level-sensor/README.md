@@ -4,6 +4,7 @@
 - [ESP32 Water Level Sensor](#esp32-water-level-sensor)
   - [Links](#links)
   - [3D](#3d)
+    - [Remixed From](#remixed-from)
 <!--toc:end-->
 
 ## Links
@@ -13,5 +14,8 @@
 
 ## 3D
 
+### Remixed From
+
 - [5 Gallon Bucket Clip](https://www.thingiverse.com/thing:5206319)
-- [PCB Box](https://www.printables.com/model/211169-univerzalni-krabicka-pro-pcb-universal-box-for-pcb)
+- [PCB Box](https://www.thingiverse.com/thing:2332435)
+
